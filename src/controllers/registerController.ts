@@ -15,9 +15,9 @@ export const doRegister = async (req: Request, res: Response) => {
 export const insertProfileImage = async (req: Request, res: Response) => {
     const file = req.file;
     const authHeader = req.headers.authorization;
-    const token = authHeader.split(' ')[1];
+    const token = authHeader?.split(' ')[1];
 
-    const profileLink = await generateProfileLink(file);
+    const profileLink = await generateProfileLink(file, token);
 
     const profile = await logUserWithProfileLink(token, profileLink);
 
