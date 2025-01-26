@@ -24,7 +24,7 @@ const storage = new Storage({
 
 
 // Referência ao bucket
-const bucketName = 'socialcar'; // Substitua pelo nome do seu bucket
+const bucketName = 'cosmo_project'; // Substitua pelo nome do seu bucket
 const bucket = storage.bucket(bucketName);
 
 export {
