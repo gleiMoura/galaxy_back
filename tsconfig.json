@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "dist",
+    "esModuleInterop": true,  // Permite interoperabilidade com módulos CommonJS
+    "module": "ESNext",       // Para usar ES Modules
+    "moduleResolution": "Node", // Para resolução de módulos no estilo Node.js
+    "baseUrl": "./src",          // Definindo o diretório base
+    "target": "ES2015"         // Garantir que o código compilado seja compatível com ES2015+
+  },
+  "ts-node": {
+    "esm": true                 // Indica que estamos usando ESM com ts-node
+  }
+}
