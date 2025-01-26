@@ -3,10 +3,10 @@ import { bucket, bucketName } from "../config/cloud.js";
 // Set para controlar arquivos que estão em processo de upload
 const uploadInProgress = new Set();
 
-export const generateProfileLink = async (file) => {
+export const generateProfileLink = async (file, token: string) => {
     try {
-        if (!file || !file.path || !file.originalname) {
-            throw new Error("File is not valid or missing required properties");
+        if (!file || !file.path || !file.originalname || !token) {
+            throw new Error("File or token is not valid or missing required properties");
         }
 
         const filePath = file.path;
