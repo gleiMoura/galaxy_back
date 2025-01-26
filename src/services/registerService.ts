@@ -19,7 +19,7 @@ export const logUser = async (credentials: registerType) => {
         }
     };
 
-    await logUserInDb({ ...credentials, password: passwordCrypt });
+    await logUserInDb({ ...credentials, profileUrl: "", password: passwordCrypt });
 };
 
 export const logUserWithProfileLink = async (token: string, profileLink: string) => {
@@ -41,7 +41,7 @@ export const logUserWithProfileLink = async (token: string, profileLink: string)
     if (result) {
         return ({
             token,
-            profileLink
+            profileUrl: profileLink
         });
     };
 };
