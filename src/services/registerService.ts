@@ -53,10 +53,17 @@ export const logUserWithProfileLink = async (userEmail: string, profileLink: str
 
     const result = await updateUserInDb(user, profileLink);
 
-    if (result) {
-        return ({
-            profileUrl: profileLink
-        });
+    if (!result) {
+        throw {
+            response: {
+                status: 400,
+                message: "It is not possible save image!"
+            }
+        }
     };
+
+    return ({
+        profileUrl: profileLink
+    });
 };
 
