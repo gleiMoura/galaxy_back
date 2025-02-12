@@ -4,14 +4,27 @@ export interface loginType {
     password: string
 };
 
-export interface registerType {
+export interface studentRegisterType {
+    name: string;
+    guardianName: string;
+    phone: string;
+    guardianPhone: string;
+    shortTermGoal: string;
+    longTermGoal: string;
+    schoolYear: number;
+    interests: string;
+    role?: string;
+    email: string;
+    password: string;
+}
+
+export interface teacherRegisterType {
     name: string,
     profileUrl?: string,
     email: string,
     password: string,
     role: string
 };
-
 export interface CustomError extends Error {
     response?: {
         status: number;
