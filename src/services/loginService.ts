@@ -1,8 +1,10 @@
 import { loginType } from "../interfaces/index.js";
 import { findUser, startSession } from "../repository/loginRepository.js";
-import { v4 as uuid } from "uuid";
+import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import dotenv from "dotenv";
 
+dotenv.config()
 
 const signinUser = async (credentials: loginType) => {
     const { email, password } = credentials;
@@ -22,13 +24,17 @@ const signinUser = async (credentials: loginType) => {
 
     try {
         const userId = user._id;
-        const token = uuid();
-        await startSession(userId, token);
+        const token = jwt.sign(
+            { id: userId, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: "3d" }
+        )
         delete user.password;
 
         const userInformation = {
             name: user.name,
             profileUrl: user.profileUrl,
+            role: user.role,
             email,
             token
         };

@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { registerType } from "../interfaces/index.js";
-import { findUser, findUserBySession } from "../repository/loginRepository.js";
+import { findUser } from "../repository/loginRepository.js";
 import { logUserInDb, updateUserInDb } from "../repository/registerRepository.js";
 
 export const logUser = async (credentials: registerType) => {
@@ -19,28 +19,30 @@ export const logUser = async (credentials: registerType) => {
         }
     };
 
-    await logUserInDb({ ...credentials, profileUrl: "", password: passwordCrypt });
-};
+    const info = {
+        ...credentials,
+        profileUrl: "",
+        password: passwordCrypt,
+    }
 
-export const logUserWithProfileLink = async (token: string, profileLink: string) => {
-    const session = await findUserBySession(token);
+    const result = await logUserInDb(info);
 
-    if (!session) {
+    if (!result) {
         throw {
             response: {
-                status: 404,
-                message: "User is not loged in system!"
+                status: 500,
+                message: "Problem in service to log user!"
             }
         }
     };
+};
 
-    const userId = session.userId;
+export const logUserWithProfileLink = async (userId: number, profileLink: string) => {
 
     const result = await updateUserInDb(userId, profileLink);
 
     if (result) {
         return ({
-            token,
             profileUrl: profileLink
         });
     };
