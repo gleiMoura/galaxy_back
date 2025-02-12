@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
-import { registerType } from "../interfaces/index.js";
+import { teacherRegisterType, studentRegisterType } from "../interfaces/index.js";
 import { findUser } from "../repository/loginRepository.js";
 import { logUserInDb, updateUserInDb } from "../repository/registerRepository.js";
 
-export const logUser = async (credentials: registerType) => {
+export const logUser = async (credentials: teacherRegisterType | studentRegisterType) => {
     const { password, email } = credentials;
 
     const passwordCrypt = bcrypt.hashSync(password, 10);
@@ -30,16 +30,28 @@ export const logUser = async (credentials: registerType) => {
     if (!result) {
         throw {
             response: {
-                status: 500,
+                status: 400,
                 message: "Problem in service to log user!"
             }
         }
     };
+
+    return result;
 };
 
-export const logUserWithProfileLink = async (userId: number, profileLink: string) => {
+export const logUserWithProfileLink = async (userEmail: string, profileLink: string) => {
+    const user = await findUser(userEmail);
 
-    const result = await updateUserInDb(userId, profileLink);
+    if (!user) {
+        throw {
+            response: {
+                status: 409,
+                message: "User is not loged in system"
+            }
+        }
+    }
+
+    const result = await updateUserInDb(user, profileLink);
 
     if (result) {
         return ({
