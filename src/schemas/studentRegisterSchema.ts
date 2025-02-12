@@ -1,7 +1,7 @@
-import { registerType } from "../interfaces/index.js";
+import { studentRegisterType } from "../interfaces/index.js";
 import joi, { ObjectSchema } from "joi";
 
-const studentRegisterSchema: ObjectSchema<registerType> = joi.object({
+const studentRegisterSchema: ObjectSchema<studentRegisterType> = joi.object({
     name: joi.string().required(),
     guardianName: joi.string().required(),
     phone: joi.string().required(),
@@ -9,7 +9,7 @@ const studentRegisterSchema: ObjectSchema<registerType> = joi.object({
     shortTermGoal: joi.string().required(),
     longTermGoal: joi.string().required(),
     schoolYear: joi.number().required(),
-    interests: joi.string().required(),
+    interests: joi.array().required(),
     role: joi.string(),
     email: joi.string().required(),
     password: joi.string().required(),
