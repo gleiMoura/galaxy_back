@@ -11,9 +11,7 @@ const upload = multer({ dest: 'uploads/' });
 const registerRouter = Router();
 
 registerRouter.post('/register/teacher', schemaValidator(registerSchemaTeacher), doRegister)
-registerRouter.put('/register/profile/teacher', authenticateToken, upload.single('file'), insertProfileImage)
-
 registerRouter.post('/register/student', schemaValidator(registerSchemaStudent), doRegister)
-registerRouter.put('/register/profile/student', upload.single('file'), insertProfileImage)
+registerRouter.put('/register/profile', authenticateToken, upload.single('file'), insertProfileImage)
 
 export default registerRouter;
