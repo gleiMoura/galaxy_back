@@ -29,12 +29,12 @@ export const updateUserInDb = async (user: studentRegisterType | teacherRegister
     try {
         let result = null;
 
-        if (user.role === "student") {
+        if (user.role === "Student") {
             result = await prisma.student.update({
                 where: { email: user.email },
                 data: { profileUrl: profileLink },
             });
-        } else {
+        } else if (user.role === "Teacher") {
             result = await prisma.teacher.update({
                 where: { email: user.email },
                 data: { profileUrl: profileLink },
