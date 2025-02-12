@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+} 
+
+model Teacher {
+  id             Int      @id @default(autoincrement())
+  name           String
+  subject        String
+  funFactOne     String?
+  funFactTwo     String?
+  academicDegree String
+  availabilities Availability[]
+  contracts      Contract[]
+  payments       Payment[]
+}
+
+model Student {
+  id              Int      @id @default(autoincrement())
+  name            String
+  guardianName    String?
+  phone           String?
+  guardianPhone   String?
+  shortTermGoal   String?
+  longTermGoal    String?
+  schoolYear      Int
+  interests       StudentInterest[]
+  contracts       Contract[]
+}
+
+model StudentInterest {
+  id        Int     @id @default(autoincrement())
+  student   Student @relation(fields: [studentId], references: [id])
+  studentId Int
+  subject   String
+}
+
+model Plan {
+  id            Int      @id @default(autoincrement())
+  name          String
+  description   String
+  price         Decimal
+  contracts     Contract[]
+}
+
+model Contract {
+  id               Int      @id @default(autoincrement())
+  startDate        DateTime
+  endDate          DateTime
+  lessonsPerWeek   Int
+  usedLessons      Int      @default(0)
+  signed          Boolean  @default(false)
+  plan            Plan     @relation(fields: [planId], references: [id])
+  planId          Int
+  student         Student  @relation(fields: [studentId], references: [id])
+  studentId       Int
+  teacher         Teacher? @relation(fields: [teacherId], references: [id])
+  teacherId       Int?
+}
+
+model Payment {
+  id          Int      @id @default(autoincrement())
+  teacher     Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId   Int
+  amount      Decimal
+  paidAt      DateTime
+}
+
+model Availability {
+  id         Int      @id @default(autoincrement())
+  teacher    Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId  Int
+  weekday    Int      // 1 = Sunday, 7 = Saturday
+  startTime  DateTime
+  endTime    DateTime
+}
