@@ -1,3 +1,4 @@
+import { Request } from "express";
 export interface loginType {
     email: string,
     password: string
@@ -7,7 +8,8 @@ export interface registerType {
     name: string,
     profileUrl?: string,
     email: string,
-    password: string
+    password: string,
+    role: string
 };
 
 export interface CustomError extends Error {
@@ -51,4 +53,25 @@ export interface PostType {
     userId: string,
     caption: string;
     photo: string
+}
+
+export interface TeacherType {
+    name: string;
+    subject: string;
+    funFactOne?: string;
+    funFactTwo?: string;
+    academicDegree: string;
+    email: string;
+    password: string;
+    role?: string;
+};
+
+declare module "express-serve-static-core" {
+export interface Request {
+        user?: {
+            id: number;
+            role: string;
+            email: string;
+        };
+    }
 }
