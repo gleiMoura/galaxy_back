@@ -4,12 +4,12 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const authenticateToken = (req: Request, res: Response, next: NextFunction): void => {
+const tokenValidator = (req: Request, res: Response, next: NextFunction): void => {
     const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
         res.status(401).json({ message: "Access denied. No token provided." });
-        return; 
+        return;
     }
 
     try {
@@ -21,4 +21,4 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction): voi
     }
 };
 
-export default authenticateToken;
+export default tokenValidator;
