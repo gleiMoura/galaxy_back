@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { teacherRegisterType, studentRegisterType } from "../interfaces/index.js";
-import { findUser } from "../repository/loginRepository.js";
+import { findUser } from "../repository/studentRepository.js";
 import { logUserInDb, updateUserInDb } from "../repository/registerRepository.js";
 
 export const logUser = async (credentials: teacherRegisterType | studentRegisterType) => {
