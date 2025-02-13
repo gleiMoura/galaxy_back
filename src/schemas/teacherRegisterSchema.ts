@@ -1,4 +1,3 @@
-import { registerType } from "../interfaces/index.js";
 import Joi, { ObjectSchema } from "joi";
 import { TeacherType } from "../interfaces/index.js";
 
