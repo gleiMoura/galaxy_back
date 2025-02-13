@@ -1,5 +1,5 @@
 import { loginType } from "../interfaces/index.js";
-import { findUser, startSession } from "../repository/loginRepository.js";
+import {findUser} from "../repository/studentRepository.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -23,7 +23,7 @@ const signinUser = async (credentials: loginType) => {
     };
 
     try {
-        const userId = user._id;
+        const userId = user.id;
         const token = jwt.sign(
             { id: userId, email: user.email },
             process.env.JWT_SECRET,
