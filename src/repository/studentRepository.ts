@@ -21,3 +21,16 @@ export const findAllStudents = async () => {
     }
 };
 
+export const updateStudentInDB = async (userId: number, updateData) => {
+    try {
+        return (
+            await prisma.student.update({
+                where: { id: userId },
+                data: { ...updateData }
+            })
+        );
+    } catch (error) {
+        console.error("Error finding user:", error);
+    }
+};
+
