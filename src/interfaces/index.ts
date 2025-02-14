@@ -17,6 +17,18 @@ export interface studentRegisterType {
     email: string;
     password: string;
 }
+export interface studentType {
+    id?: number;
+    name?: string;
+    guardianName?: string;
+    phone?: string;
+    guardianPhone?: string;
+    shortTermGoal?: string;
+    longTermGoal?: string;
+    schoolYear?: number;
+    interests?: string;
+    role?: string;
+}
 
 export interface teacherRegisterType {
     name: string,
@@ -80,7 +92,7 @@ export interface TeacherType {
 };
 
 declare module "express-serve-static-core" {
-export interface Request {
+    export interface Request {
         user?: {
             id: number;
             role: string;
