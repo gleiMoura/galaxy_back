@@ -27,7 +27,7 @@ export const findStudents = async (email: string) => {
         }
     };
 
-    if (user.role !== "Teacher") {
+    if (user.role === "Student") {
         throw {
             response: {
                 status: 400,
