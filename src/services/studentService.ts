@@ -1,4 +1,5 @@
-import { findUser, findAllStudents } from "../repository/studentRepository";
+import { studentType } from "interfaces";
+import { findUser, findAllStudents, updateStudentInDB } from "../repository/studentRepository";
 
 export const findStudent = async (email: string) => {
     const user = await findUser(email);
@@ -37,6 +38,32 @@ export const findStudents = async (email: string) => {
     }
 
     const users = await findAllStudents()
+
+    return users;
+};
+
+export const updateUserStudent = async (email: string, updateData: studentType) => {
+    const user = await findUser(email);
+
+    if (!user) {
+        throw {
+            response: {
+                status: 404,
+                message: "User was not found in sistem!"
+            }
+        }
+    };
+
+    if (user.role === "Teacher") {
+        throw {
+            response: {
+                status: 400,
+                message: "User doen't have permission!"
+            }
+        }
+    }
+    const userId = user.id;
+    const users = await updateStudentInDB(userId, updateData)
 
     return users;
 };
