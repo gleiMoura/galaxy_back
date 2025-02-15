@@ -1,7 +1,7 @@
 import Joi, { ObjectSchema } from "joi";
 import { TeacherType } from "../interfaces/index.js";
 
-const teacherSchema: ObjectSchema<TeacherType> = Joi.object({
+const teacherRegisterSchema: ObjectSchema<TeacherType> = Joi.object({
     name: Joi.string().required(),
     subject: Joi.string().required(),
     funFactOne: Joi.string().optional(),
@@ -12,4 +12,4 @@ const teacherSchema: ObjectSchema<TeacherType> = Joi.object({
     password: Joi.string().min(6).required()
 });
 
-export default teacherSchema;
+export default teacherRegisterSchema;
