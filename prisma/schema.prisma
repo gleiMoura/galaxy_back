@@ -43,12 +43,13 @@ model Student {
 }
 
 model Admin {
-  id       Int    @id @default(autoincrement())
-  name     String
-  function String
-  email    String @unique
-  password String
-  role     String @default("admin")
+  id         Int    @id @default(autoincrement())
+  name       String
+  function   String
+  email      String @unique
+  password   String
+  role       String @default("admin")
+  profileUrl String
 }
 
 model StudentInterest {
