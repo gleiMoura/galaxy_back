@@ -5,6 +5,7 @@ import authenticateToken from "middlewares/tokenValidator.js";
 import registerSchemaStudent from "../schemas/studentRegisterSchema.js";
 import registerSchemaTeacher from "../schemas/teacherRegisterSchema.js";
 import multer from "multer"
+import registerSchemaAdmin from "schemas/adminRegisterSchema.js";
 
 const upload = multer({ dest: 'uploads/' });
 
@@ -12,7 +13,7 @@ const registerRouter = Router();
 
 registerRouter.post('/register/teacher', schemaValidator(registerSchemaTeacher), doRegister);
 registerRouter.post('/register/student', schemaValidator(registerSchemaStudent), doRegister);
-//registerRouter.post('/register/admin', schemaValidator(), doRegister);
+registerRouter.post('/register/admin', schemaValidator(registerSchemaAdmin), doRegister);
 registerRouter.put('/register/profile', authenticateToken, upload.single('file'), insertProfileImage)
 
 export default registerRouter;
