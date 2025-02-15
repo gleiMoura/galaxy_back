@@ -3,7 +3,8 @@ import { deleteStudent, getStudent, updateStudent } from "controllers/studentCon
 import { getStudents } from "controllers/studentController";
 import schemaValidator from "../middlewares/schemaValidator.js";
 import tokenValidator from "middlewares/tokenValidator.js";
-import studentSchema from "schemas/studentSchema.js";
+import schemas from "schemas/index.js";
+
 const studentRouter = Router();
 
 //students routes
@@ -12,7 +13,7 @@ studentRouter.get("/students", tokenValidator, getStudents);
 studentRouter.put("/student", tokenValidator, updateStudent);
 studentRouter.delete("/student/:id", tokenValidator, deleteStudent);
 //contract routes
-//studentRouter.post('/student/contract', schemaValidator(contractSchema), createContract);
+studentRouter.post('/student/contract', schemaValidator(schemas.contractSchema), createContract);
 //studentRouter.get('/student/contract', getContracts)
 //studentRouter.put('/student/contract', schemaValidator(contractSchema), updateContract);
 //studentRouter.delete('/student/contract', deleteContract);
