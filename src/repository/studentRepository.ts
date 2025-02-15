@@ -34,3 +34,15 @@ export const updateStudentInDB = async (userId: number, updateData) => {
     }
 };
 
+export const deleteStudentInDb = async (userId: number) => {
+    try {
+        return (
+            await prisma.student.delete({
+                where: { id: userId }
+            })
+        );
+    } catch (error) {
+        console.error("Error finding user:", error);
+    }
+};
+
