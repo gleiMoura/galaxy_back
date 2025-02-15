@@ -1,5 +1,5 @@
 import { loginType } from "../interfaces/index.js";
-import {findUser} from "../repository/studentRepository.js";
+import { findUser } from "../repository/studentRepository.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -32,6 +32,7 @@ const signinUser = async (credentials: loginType) => {
         delete user.password;
 
         const userInformation = {
+            id: user.id,
             name: user.name,
             profileUrl: user.profileUrl,
             role: user.role,
