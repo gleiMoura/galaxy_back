@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getStudent, updateStudent } from "controllers/studentController";
+import { deleteStudent, getStudent, updateStudent } from "controllers/studentController";
 import { getStudents } from "controllers/studentController";
 import schemaValidator from "../middlewares/schemaValidator.js";
 import tokenValidator from "middlewares/tokenValidator.js";
@@ -10,7 +10,7 @@ const studentRouter = Router();
 studentRouter.get("/student", tokenValidator, getStudent);
 studentRouter.get("/students", tokenValidator, getStudents);
 studentRouter.put("/student", tokenValidator, updateStudent);
-//studentRouter.delete("/student", deleteStudent);
+studentRouter.delete("/student", deleteStudent);
 //contract routes
 //studentRouter.post('/student/contract', schemaValidator(contractSchema), createContract);
 //studentRouter.get('/student/contract', getContracts)
