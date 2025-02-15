@@ -42,6 +42,15 @@ model Student {
   classes       Class[]
 }
 
+model Admin {
+  id       Int    @id @default(autoincrement())
+  name     String
+  function String
+  email    String @unique
+  password String
+  role     String @default("admin")
+}
+
 model StudentInterest {
   id        Int     @id @default(autoincrement())
   student   Student @relation(fields: [studentId], references: [id])
