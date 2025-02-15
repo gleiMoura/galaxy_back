@@ -8,7 +8,7 @@ export const findStudent = async (email: string) => {
         throw {
             response: {
                 status: 404,
-                message: "User was not found in sistem!"
+                message: "Usuário não foi encontrado no sistema."
             }
         }
     };
@@ -23,7 +23,7 @@ export const findStudents = async (email: string) => {
         throw {
             response: {
                 status: 404,
-                message: "User was not found in sistem!"
+                message: "Usuário não foi encontrado no sistema."
             }
         }
     };
@@ -32,7 +32,7 @@ export const findStudents = async (email: string) => {
         throw {
             response: {
                 status: 400,
-                message: "User doen't have permission!"
+                message: "Usuário não possui permissão!"
             }
         }
     }
@@ -49,7 +49,7 @@ export const updateUserStudent = async (email: string, updateData: studentType) 
         throw {
             response: {
                 status: 404,
-                message: "User was not found in sistem!"
+                message: "Usuário não foi encontrado no sistema!"
             }
         }
     };
@@ -58,7 +58,7 @@ export const updateUserStudent = async (email: string, updateData: studentType) 
         throw {
             response: {
                 status: 400,
-                message: "User doen't have permission!"
+                message: "Usuário não tem permissão!"
             }
         }
     }
@@ -68,25 +68,26 @@ export const updateUserStudent = async (email: string, updateData: studentType) 
     return users;
 };
 
-export const deleteUserStudent = async (email: string, studentId) => {
-    const adminUser = await findUser(email);
+export const deleteUserStudent = async (email: string, studentId: string) => {
+    const adminUser = email && await findUser(email);
 
-    if (adminUser.role !== "admin") {
+    if (adminUser?.role !== "Admin") {
         throw {
             response: {
                 status: 400,
-                message: "User doen't have permission!"
+                message: "Usuário não tem permissão!"
             }
         }
     }
 
-    const result = await deleteStudentInDb(studentId)
+    const id = parseInt(studentId);
+    const result = await deleteStudentInDb(id);
 
     if (!result) {
         throw {
             response: {
                 status: 500,
-                message: "It was not possible delete user at the moment."
+                message: "Não foi possível deletar o usuário no momento."
             }
         }
     }
