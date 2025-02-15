@@ -60,26 +60,32 @@ model StudentInterest {
 }
 
 model Plan {
-  id          Int        @id @default(autoincrement())
-  name        String
-  description String
-  price       Decimal
-  contracts   Contract[]
+  id             Int        @id @default(autoincrement())
+  name           String
+  description    String
+  price          Decimal
+  lessonsPerWeek Int
+  totalLessons   Int
+  contracts      Contract[]
 }
 
 model Contract {
-  id             Int      @id @default(autoincrement())
-  startDate      DateTime
-  endDate        DateTime
-  lessonsPerWeek Int
-  usedLessons    Int      @default(0)
-  signed         Boolean  @default(false)
-  plan           Plan     @relation(fields: [planId], references: [id])
-  planId         Int
-  student        Student  @relation(fields: [studentId], references: [id])
-  studentId      Int
-  teacher        Teacher? @relation(fields: [teacherId], references: [id])
-  teacherId      Int?
+  id                   Int      @id @default(autoincrement())
+  startDate            DateTime
+  endDate              DateTime
+  lessonsPerWeek       Int
+  usedLessons          Int      @default(0)
+  contractTotalLessons Int
+  firstMonthLessons    Int
+  secondMonthLessons   Int
+  thirdMonthLessons    Int
+  signed               Boolean  @default(false)
+  plan                 Plan     @relation(fields: [planId], references: [id])
+  planId               Int
+  student              Student  @relation(fields: [studentId], references: [id])
+  studentId            Int
+  teacher              Teacher? @relation(fields: [teacherId], references: [id])
+  teacherId            Int?
 }
 
 model Payment {
