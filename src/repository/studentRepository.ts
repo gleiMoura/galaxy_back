@@ -4,7 +4,8 @@ export const findUser = async (email) => {
     try {
         return (
             await prisma.student.findUnique({ where: { email } }) ||
-            await prisma.teacher.findUnique({ where: { email } })
+            await prisma.teacher.findUnique({ where: { email } }) ||
+            await prisma.admin.findUnique({ where: { email } })
         );
     } catch (error) {
         console.error("Error finding user:", error);
@@ -34,11 +35,16 @@ export const updateStudentInDB = async (userId: number, updateData) => {
     }
 };
 
-export const deleteStudentInDb = async (userId: number) => {
+export const deleteStudentInDb = async (id: number) => {
     try {
+        await prisma.studentInterest.deleteMany({
+            where: { studentId: id }
+        });
+
         return (
+
             await prisma.student.delete({
-                where: { id: userId }
+                where: { id }
             })
         );
     } catch (error) {
