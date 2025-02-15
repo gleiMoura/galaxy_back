@@ -17,6 +17,10 @@ export const logUserInDb = async (userData) => {
                     }
                 }
             });
+        } else if (userData.role === "Admin") {
+            return await prisma.admin.create({
+                data: userData
+            });
         } else {
             return null
         }
