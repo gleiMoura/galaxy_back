@@ -10,7 +10,7 @@ const studentRouter = Router();
 studentRouter.get("/student", tokenValidator, getStudent);
 studentRouter.get("/students", tokenValidator, getStudents);
 studentRouter.put("/student", tokenValidator, updateStudent);
-studentRouter.delete("/student", deleteStudent);
+studentRouter.delete("/student/:id", tokenValidator, deleteStudent);
 //contract routes
 //studentRouter.post('/student/contract', schemaValidator(contractSchema), createContract);
 //studentRouter.get('/student/contract', getContracts)
