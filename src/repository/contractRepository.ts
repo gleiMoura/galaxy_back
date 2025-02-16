@@ -11,3 +11,14 @@ export const createContractInDb = async (data) => {
         console.error("Error finding user:", error);
     }
 };
+
+export const getContractsInDb = async () => {
+    try {
+        return (
+            await prisma.contract.findMany()
+        );
+    } catch (error) {
+        console.error("Error finding user:", error);
+    }
+};
+
