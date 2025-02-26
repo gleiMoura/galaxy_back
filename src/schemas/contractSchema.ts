@@ -1,6 +1,7 @@
 import joi, { ObjectSchema } from "joi";
 
 const contractSchema: ObjectSchema = joi.object({
+    id: joi.number().required(),
     startDate: joi.date().required(),
     endDate: joi.date().required(),
     lessonsPerWeek: joi.number().integer().min(1).required(),
