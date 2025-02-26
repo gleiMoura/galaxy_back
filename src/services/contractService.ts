@@ -1,6 +1,6 @@
-import { studentType } from "interfaces";
-import { findUser, findAllStudents, updateStudentInDB, deleteStudentInDb } from "../repository/studentRepository";
-import { createContractInDb, getContractsInDb } from "repository/contractRepository";
+import { ContractType } from "interfaces";
+import { findUser } from "../repository/studentRepository";
+import { changeContractInDb, createContractInDb, getContractsInDb } from "repository/contractRepository";
 
 export const makeContract = async (email: string, data) => {
     const user = email && await findUser(email);
@@ -13,7 +13,6 @@ export const makeContract = async (email: string, data) => {
             }
         }
     };
-
 
     const result = await createContractInDb(data);
 
@@ -47,6 +46,40 @@ export const getAllContracts = async (email: string) => {
             response: {
                 status: 500,
                 message: "Não foi possível pegar os contratos no momento."
+            }
+        }
+    }
+
+    return result;
+};
+export const changeContract = async (email: string, dataContract: ContractType) => {
+    const user = email && await findUser(email);
+
+    if (user?.role !== "Admin") {
+        throw {
+            response: {
+                status: 400,
+                message: "Usuário não tem permissão!"
+            }
+        }
+    };
+
+    if (dataContract.signed === true) {
+        throw {
+            response: {
+                status: 409,
+                message: "Usuário já assinou o contrato. Não é possível mudá-lo."
+            }
+        }
+    }
+
+    const result = await changeContractInDb(dataContract);
+
+    if (!result) {
+        throw {
+            response: {
+                status: 500,
+                message: "Não foi possível mudar o contrato no momento!."
             }
         }
     }
