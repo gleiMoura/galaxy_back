@@ -91,6 +91,21 @@ export interface TeacherType {
     role?: string;
 };
 
+export type ContractType = {
+    id?: number;
+    startDate: string;
+    endDate: string;
+    lessonsPerWeek: number;
+    usedLessons?: number;
+    contractTotalLessons: number;
+    firstMonthLessons: number;
+    secondMonthLessons: number;
+    thirdMonthLessons: number;
+    signed?: boolean;
+    planId: number;
+    studentId: number;
+    teacherId?: number | null;
+};
 declare module "express-serve-static-core" {
     export interface Request {
         user?: {
@@ -100,3 +115,4 @@ declare module "express-serve-static-core" {
         };
     }
 }
+
