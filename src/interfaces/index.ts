@@ -81,30 +81,34 @@ export interface PostType {
 }
 
 export interface TeacherType {
+    id?: number,
     name: string;
     subject: string;
     funFactOne?: string;
     funFactTwo?: string;
-    academicDegree: string;
+    academicDegree?: string;
     email: string;
-    password: string;
+    password?: string;
     role?: string;
+    profileUrl?: string
 };
 
 export type ContractType = {
     id?: number;
-    startDate: string;
-    endDate: string;
+    startDate: Date;
+    endDate: Date;
     lessonsPerWeek: number;
     usedLessons?: number;
     contractTotalLessons: number;
     firstMonthLessons: number;
     secondMonthLessons: number;
     thirdMonthLessons: number;
-    signed?: boolean;
+    signed: boolean;
     planId: number;
     studentId: number;
     teacherId?: number | null;
+    student?: studentType,
+    teacher?: TeacherType
 };
 declare module "express-serve-static-core" {
     export interface Request {
