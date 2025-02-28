@@ -43,8 +43,39 @@ export const getContractsInDb = async () => {
     }
 };
 
+export const getContractInDb = async (id: number) => {
+    try {
+        return await prisma.contract.findUnique({
+            where: { id },
+            include: {
+                student: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        profileUrl: true,
+                        schoolYear: true,
+                    },
+                },
+                teacher: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        profileUrl: true,
+                        subject: true,
+                    },
+                },
+            },
+        });
+    } catch (error) {
+        console.error("Error finding contracts:", error);
+        return null;
+    }
+};
 
-export const changeContractInDb = async (dataContract: ContractType) => {
+
+export const changeContractInDb = async (dataContract: any) => {
     try {
         return (
             await prisma.contract.update({
@@ -57,3 +88,14 @@ export const changeContractInDb = async (dataContract: ContractType) => {
     }
 };
 
+export const deleteContractInDb = async (id: number) => {
+    try {
+        return (
+            await prisma.contract.delete({
+                where: { id }
+            })
+        );
+    } catch (error) {
+        console.error("Error finding user:", error);
+    }
+};
