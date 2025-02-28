@@ -1,7 +1,7 @@
 
 import { Request, Response } from "express";
 import { ContractType } from "interfaces";
-import { changeContract, getAllContracts, makeContract } from "services/contractService";
+import { changeContract, findContract, finishContract, getAllContracts, makeContract } from "services/contractService";
 
 export const createContract = async (req: Request, res: Response) => {
     const userEmail = req.user?.email;
@@ -20,11 +20,29 @@ export const getContracts = async (req: Request, res: Response) => {
     res.send(contracts).status(200);
 };
 
+export const getContract = async (req: Request, res: Response) => {
+    const adminEmail = req.user?.email;
+    const id = req.params.id;
+
+    const contract = await findContract(adminEmail, id)
+
+    res.send(contract).status(200);
+};
+
 export const updateContract = async (req: Request, res: Response) => {
     const adminEmail = req.user?.email;
     const dataContract: ContractType = req.body;
 
     const contract = await changeContract(adminEmail, dataContract)
+
+    res.send(contract).status(200);
+};
+
+export const deleteContract = async (req: Request, res: Response) => {
+    const adminEmail = req.user?.email;
+    const id = req.params.id;
+
+    const contract = await finishContract(adminEmail, id)
 
     res.send(contract).status(200);
 };
