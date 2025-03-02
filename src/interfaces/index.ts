@@ -110,6 +110,16 @@ export type ContractType = {
     student?: studentType,
     teacher?: TeacherType
 };
+
+export type ClassType = {
+    id: number;
+    studentId: number;
+    title: string;
+    subject: string;
+    sentAt: Date;
+    pdfUrl: string;
+};
+
 declare module "express-serve-static-core" {
     export interface Request {
         user?: {
