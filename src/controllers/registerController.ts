@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { generateProfileLink } from "../repository/filesRepository.js";
+import { generateFileLink } from "../repository/filesRepository.js";
 import { logUser, logUserWithProfileLink } from "../services/registerService.js";
 
 
@@ -16,9 +16,9 @@ export const insertProfileImage = async (req: Request, res: Response) => {
     const file = req.file;
     const userEmail = req.user?.email;
 
-    const profileLink = await generateProfileLink(file);
+    const fileLink = await generateFileLink(file);
 
-    const profile = await logUserWithProfileLink(userEmail, profileLink);
+    const profile = await logUserWithProfileLink(userEmail, fileLink);
 
     res.status(201).send(profile);
 };

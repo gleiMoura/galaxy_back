@@ -39,7 +39,7 @@ export const logUser = async (credentials: teacherRegisterType | studentRegister
     return result;
 };
 
-export const logUserWithProfileLink = async (userEmail: string, profileLink: string) => {
+export const logUserWithProfileLink = async (userEmail: string, fileLink: string) => {
     const user = await findUser(userEmail);
 
     if (!user) {
@@ -51,7 +51,7 @@ export const logUserWithProfileLink = async (userEmail: string, profileLink: str
         }
     }
 
-    const result = await updateUserInDb(user, profileLink);
+    const result = await updateUserInDb(user, fileLink);
 
     if (!result) {
         throw {
@@ -63,7 +63,7 @@ export const logUserWithProfileLink = async (userEmail: string, profileLink: str
     };
 
     return ({
-        profileUrl: profileLink
+        profileUrl: fileLink
     });
 };
 

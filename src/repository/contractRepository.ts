@@ -1,5 +1,4 @@
 import prisma from "config";
-import { ContractType } from "interfaces";
 
 export const createContractInDb = async (data) => {
     try {

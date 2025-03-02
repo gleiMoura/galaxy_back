@@ -29,19 +29,19 @@ export const logUserInDb = async (userData) => {
     }
 };
 
-export const updateUserInDb = async (user: studentRegisterType | teacherRegisterType, profileLink: string) => {
+export const updateUserInDb = async (user: studentRegisterType | teacherRegisterType, fileLink: string) => {
     try {
         let result = null;
 
         if (user.role === "Student") {
             result = await prisma.student.update({
                 where: { email: user.email },
-                data: { profileUrl: profileLink },
+                data: { profileUrl: fileLink },
             });
         } else if (user.role === "Teacher") {
             result = await prisma.teacher.update({
                 where: { email: user.email },
-                data: { profileUrl: profileLink },
+                data: { profileUrl: fileLink },
             });
         }
 
