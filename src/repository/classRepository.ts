@@ -31,6 +31,70 @@ export const getClassById = async (id: number) => {
                 id: true,
                 title: true,
                 subject: true,
+                pdfUrl: true,
+                student: {
+                    select: {
+                        name: true
+                    }
+                },
+                teacher: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        });
+
+        if (!classData) {
+            console.log("It's not possible find this Lesson.")
+        };
+
+        return classData;
+    } catch (error) {
+        console.error("Error getting class", error);
+    }
+};
+
+export const getClassesByStudentId = async (id: number) => {
+    try {
+        const classData = await prisma.class.findMany({
+            where: { studentId: id },
+            select: {
+                id: true,
+                title: true,
+                subject: true,
+                pdfUrl: true,
+                student: {
+                    select: {
+                        name: true
+                    }
+                },
+                teacher: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        });
+
+        if (!classData) {
+            console.log("It's not possible find this Lesson.")
+        };
+
+        return classData;
+    } catch (error) {
+        console.error("Error getting class", error);
+    }
+};
+
+export const getClassesByTeacherId = async (id: number) => {
+    try {
+        const classData = await prisma.class.findMany({
+            where: { teacherId: id },
+            select: {
+                id: true,
+                title: true,
+                subject: true,
                 student: {
                     select: {
                         name: true
