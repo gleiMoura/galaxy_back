@@ -18,7 +18,6 @@ export const generateClass = async (email: string, data: ClassType, fileUrl: str
 
     const getBrasiliaTime = () => {
         const brasiliaDate = DateTime.now().setZone("America/Sao_Paulo");
-        console.log(brasiliaDate.toISO({ suppressMilliseconds: true }))
         return brasiliaDate.toISO({ suppressMilliseconds: true });
     }
 
