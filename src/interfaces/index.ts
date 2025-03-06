@@ -112,8 +112,8 @@ export type ContractType = {
 };
 
 export type ClassType = {
-    id: number;
-    studentId: number;
+    id?: number;
+    studentId: string;
     title: string;
     subject: string;
     sentAt: Date;
