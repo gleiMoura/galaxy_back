@@ -1,6 +1,6 @@
 import { generateFileLink } from "repository/filesRepository";
 import { Request, Response } from "express";
-import { generateClass, getSpecificClass } from "services/classService";
+import { generateClass, getAllClasses, getSpecificClass } from "services/classService";
 import { createFileLink } from "services/fileService";
 
 export const createClass = async (req: Request, res: Response) => {
@@ -20,4 +20,12 @@ export const getClass = async (req: Request, res: Response) => {
     const specificClass = await getSpecificClass(id);
 
     res.status(200).send(specificClass);
+};
+
+export const getClasses = async (req: Request, res: Response) => {
+    const user = req.user;
+
+    const classes = await getAllClasses(user);
+
+    res.status(200).send(classes);
 };
