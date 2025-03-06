@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { createClassInDb } from "repository/classRepository";
+import { createClassInDb, getClassById } from "repository/classRepository";
 import { findUser } from "../repository/studentRepository";
 import { ClassType } from "interfaces";
 import classSchema from "schemas/classSchema";
@@ -40,6 +40,32 @@ export const generateClass = async (email: string, data: ClassType, fileUrl: str
     }
 
     const result = await createClassInDb(info);
+
+    if (!result) {
+        throw {
+            response: {
+                status: 400,
+                message: "Não foi possível criar a lição no momento."
+            }
+        }
+    }
+
+    return result;
+};
+
+export const getSpecificClass = async (id: string) => {
+    const classId = parseInt(id);
+
+    if (!id) {
+        throw {
+            response: {
+                status: 404,
+                message: "StudentId is necessary!"
+            }
+        }
+    };
+
+    const result = await getClassById(classId);
 
     if (!result) {
         throw {
