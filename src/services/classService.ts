@@ -1,8 +1,10 @@
+import { DateTime } from "luxon";
 import { createClassInDb } from "repository/classRepository";
 import { findUser } from "../repository/studentRepository";
 import { ClassType } from "interfaces";
+import classSchema from "schemas/classSchema";
 
-export const generateClass = async (email: string, data: ClassType) => {
+export const generateClass = async (email: string, data: ClassType, fileUrl: string) => {
     const user = email && await findUser(email);
 
     if (user?.role === "Student") {
@@ -14,7 +16,31 @@ export const generateClass = async (email: string, data: ClassType) => {
         }
     };
 
-    const result = await createClassInDb(data);
+    const getBrasiliaTime = () => {
+        const brasiliaDate = DateTime.now().setZone("America/Sao_Paulo");
+        console.log(brasiliaDate.toISO({ suppressMilliseconds: true }))
+        return brasiliaDate.toISO({ suppressMilliseconds: true });
+    }
+
+    const info = {
+        ...data,
+        studentId: parseInt(data.studentId),
+        sentAt: getBrasiliaTime(),
+        pdfUrl: fileUrl
+    };
+
+    const { error } = classSchema.validate(info);
+
+    if (error) {
+        throw {
+            response: {
+                status: 404,
+                message: error.details
+            }
+        }
+    }
+
+    const result = await createClassInDb(info);
 
     if (!result) {
         throw {
@@ -24,4 +50,6 @@ export const generateClass = async (email: string, data: ClassType) => {
             }
         }
     }
+
+    return result;
 };
