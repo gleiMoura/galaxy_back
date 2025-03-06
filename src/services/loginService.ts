@@ -25,7 +25,7 @@ const signinUser = async (credentials: loginType) => {
     try {
         const userId = user.id;
         const token = jwt.sign(
-            { id: userId, email: user.email },
+            { id: userId, email: user.email, role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: "3d" }
         )
