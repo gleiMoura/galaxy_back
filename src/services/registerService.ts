@@ -42,6 +42,15 @@ export const logUser = async (credentials: teacherRegisterType | studentRegister
 export const logUserWithProfileLink = async (userEmail: string, fileLink: string) => {
     const user = await findUser(userEmail);
 
+    if (!fileLink) {
+        throw {
+            response: {
+                status: 404,
+                message: "File need to be sent or problem to create file link."
+            }
+        }
+    }
+
     if (!user) {
         throw {
             response: {
