@@ -5,10 +5,6 @@ const uploadInProgress = new Set();
 
 export const generateFileLink = async (file) => {
     try {
-        if (!file || !file.path || !file.originalname) {
-            throw new Error("File or token is not valid or missing required properties");
-        }
-
         const filePath = file.path;
         const fileName = file.originalname;
 
