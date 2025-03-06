@@ -1,5 +1,5 @@
 import { DateTime } from "luxon";
-import { createClassInDb, getClassById } from "repository/classRepository";
+import { createClassInDb, getClassById, getClassesByStudentId, getClassesByTeacherId } from "repository/classRepository";
 import { findUser } from "../repository/studentRepository";
 import { ClassType } from "interfaces";
 import classSchema from "schemas/classSchema";
@@ -70,8 +70,28 @@ export const getSpecificClass = async (id: string) => {
     if (!result) {
         throw {
             response: {
-                status: 500,
-                message: "Não foi possível criar o contrato no momento."
+                status: 400,
+                message: "Não foi possível encontrar a lição no momento."
+            }
+        }
+    }
+
+    return result;
+};
+
+export const getAllClasses = async (user: any) => {
+    let result = null;
+    if (user?.role === "Student") {
+        result = await getClassesByStudentId(user?.id);
+    } else if (user?.role === "Teacher") {
+        result = await getClassesByTeacherId(user?.id);
+    };
+
+    if (!result) {
+        throw {
+            response: {
+                status: 400,
+                message: "Não foi possível encontrar as lições no momento!."
             }
         }
     }
