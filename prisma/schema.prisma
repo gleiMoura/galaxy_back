@@ -21,6 +21,7 @@ model Teacher {
   availabilities Availability[]
   contracts      Contract[]
   payments       Payment[]
+  Class          Class[]
 }
 
 model Student {
@@ -124,6 +125,8 @@ model Class {
   id        Int      @id @default(autoincrement())
   student   Student  @relation(fields: [studentId], references: [id])
   studentId Int
+  teacher   Teacher  @relation(fields: [teacherId], references: [id])
+  teacherId Int
   title     String
   subject   String
   sentAt    DateTime @default(now())
