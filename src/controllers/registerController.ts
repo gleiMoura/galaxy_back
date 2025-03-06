@@ -13,8 +13,17 @@ export const doRegister = async (req: Request, res: Response) => {
 
 
 export const insertProfileImage = async (req: Request, res: Response) => {
-    const file = req.file;
+    const file = req?.file;
     const userEmail = req.user?.email;
+
+    if(!file) {
+        throw{
+            response:{
+                status: 404,
+                message: "File need to be sent"
+            }
+        }
+    }
 
     const fileLink = await generateFileLink(file);
 
