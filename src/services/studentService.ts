@@ -1,10 +1,10 @@
 import { studentType } from "interfaces";
 import { findUser, findAllStudents, updateStudentInDB, deleteStudentInDb } from "../repository/studentRepository";
 
-export const findStudent = async (email: string) => {
-    const user = await findUser(email);
+export const findStudent = async (user: any, studentId: number) => {
+    const student = await findUser(studentId);
 
-    if (!user) {
+    if (!student) {
         throw {
             response: {
                 status: 404,
@@ -12,6 +12,15 @@ export const findStudent = async (email: string) => {
             }
         }
     };
+
+    if (user.role === student) {
+        throw {
+            response: {
+                status: 409,
+                message: "Estudante não pode procurar um estudante."
+            }
+        }
+    }
 
     return user;
 };
