@@ -3,11 +3,12 @@ import { studentType } from "interfaces";
 import { deleteUserStudent, findStudent, findStudents, updateUserStudent } from "services/studentService.js";
 
 export const getStudent = async (req: Request, res: Response) => {
-    const email = req.user?.email;
+    const user = req.user;
+    const studentId = parseInt(req.params?.id);
 
-    const user = await findStudent(email)
+    const student = await findStudent(user, studentId)
 
-    res.send(user).status(201);
+    res.send(student).status(201);
 };
 
 export const getStudents = async (req: Request, res: Response) => {
