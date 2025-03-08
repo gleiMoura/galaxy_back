@@ -1,4 +1,3 @@
-import { generateFileLink } from "repository/filesRepository";
 import { Request, Response } from "express";
 import { generateClass, getAllClasses, getSpecificClass } from "services/classService";
 import { createFileLink } from "services/fileService";
