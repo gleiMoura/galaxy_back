@@ -1,21 +1,17 @@
 import { Router } from "express";
-import schemaValidator from "../middlewares/schemaValidator.js";
-import teacherSchema from "schemas/teacherRegisterSchema.js";
+import tokenValidator from "middlewares/tokenValidator.js";
+import { deleteTeacher, getTeacher, getTeachers } from "controllers/teacherController.js";
 
 
 const teacherRouter = Router();
 
-//teacher
-//teacherRouter.get("/teacher", getTeacher);
-//teacherRouter.get("/teachers", getTeachers);
-//teacherRouter.put("/teacher", schemaValidator(teacherSchema) updateTeacher);
-//teacherRouter.delete("/teacher", deleteTeacher);
-//students from teachers
-//teacherRouter.get("/teacher/students", getStudentsFromTeacher)
+teacherRouter.get("/teacher", tokenValidator, getTeacher);
+teacherRouter.get("/teachers", tokenValidator, getTeachers);
+teacherRouter.delete("/teacher", tokenValidator, deleteTeacher);
 //payments
+//teacherRouter.put("/teacher/payment", tokenValidator, createTeacherPayment)
+//teacherRouter.get("/teacher/payment", tokenValidator, getPayment);
 //teacherRouter.get("/teacher/payments", getPayments);
-//classes
-//teacherRouter.get("/teacher/classes", getClasses)
 
 
 
