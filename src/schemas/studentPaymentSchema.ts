@@ -1,4 +1,4 @@
-const Joi = require('joi');
+import Joi from "joi";
 
 const studentPaymentSchema = Joi.object({
     id: Joi.number().integer().positive().optional(),
@@ -9,4 +9,4 @@ const studentPaymentSchema = Joi.object({
     invoiceUrl: Joi.string().uri().required(),
 });
 
-module.exports = studentPaymentSchema;
+export default studentPaymentSchema;
