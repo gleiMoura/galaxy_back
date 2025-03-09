@@ -23,3 +23,51 @@ export const createTeacherPaymentInDb = async (data) => {
         console.error("Error trying to create a payment to teacher user:", error);
     }
 };
+
+export const getStudentPaymentInDb = async (id: number) => {
+    try {
+        return (
+            await prisma.studentPayment.findUnique({
+                where: {
+                    id
+                }
+            })
+        );
+    } catch (error) {
+        console.error("Error trying to find a payment", error);
+    }
+};
+
+export const getStudentPaymentsInDb = async () => {
+    try {
+        return (
+            await prisma.studentPayment.findMany()
+        );
+    } catch (error) {
+        console.error("Error trying to find a payment", error);
+    }
+};
+
+export const getTeacherPaymentInDb = async (id: number) => {
+    try {
+        return (
+            await prisma.payment.findUnique({
+                where: {
+                    id
+                }
+            })
+        );
+    } catch (error) {
+        console.error("Error trying to create a payment to teacher user:", error);
+    }
+};
+
+export const getTeacherPaymentsInDb = async () => {
+    try {
+        return (
+            await prisma.payment.findMany()
+        );
+    } catch (error) {
+        console.error("Error trying to create a payment to teacher user:", error);
+    }
+};
