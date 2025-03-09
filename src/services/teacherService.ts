@@ -1,6 +1,14 @@
 import { deleteTeacherFromDb, findAllTeachers, findSpecificTeacher } from "repository/teacherRepository";
 
 export const findTeacher = async (user: any, id: number) => {
+    if(!id) {
+        throw {
+            response: {
+                status: 404,
+                message: "Id é necessário para encontrar professor!."
+            }
+        }
+    }
     const teacher = findSpecificTeacher(id);
 
     if (user?.role === "Student") {
