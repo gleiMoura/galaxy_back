@@ -22,27 +22,19 @@ const signinUser = async (credentials: loginType) => {
         }
     };
 
-    try {
-        const userId = user.id;
-        const token = jwt.sign(
-            { id: userId, email: user.email, role: user.role },
-            process.env.JWT_SECRET,
-            { expiresIn: "3d" }
-        )
-        delete user.password;
+    const token = jwt.sign(
+        { id: user.id, email: user.email, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "3d" }
+    );
 
-        const userInformation = {
-            id: user.id,
-            name: user.name,
-            profileUrl: user.profileUrl,
-            role: user.role,
-            email,
-            token
-        };
-        return userInformation;
-    } catch (error) {
-        console.error("Erro no servidor, " + error);
+    const { password: _, ...userWithoutPassword } = user;
+
+    return {
+        ...userWithoutPassword,
+        token
     }
 };
 
 export default signinUser;
+export { signinUser };
