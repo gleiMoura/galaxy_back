@@ -1,8 +1,8 @@
 import { doRegister, insertProfileImage } from "../controllers/registerController.js";
 import { Router } from "express";
 import schemaValidator from "../middlewares/schemaValidator.js";
-import tokenValidator from "middlewares/tokenValidator.js";
-import schemas from "schemas/index.js";
+import tokenValidator from "../middlewares/tokenValidator.js";
+import schemas from "../schemas/index.js";
 import multer from "multer"
 
 const upload = multer({ dest: 'uploads/' });

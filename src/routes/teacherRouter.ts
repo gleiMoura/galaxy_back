@@ -1,9 +1,9 @@
 import { Router } from "express";
-import tokenValidator from "middlewares/tokenValidator.js";
-import { deleteTeacher, getTeacher, getTeachers } from "controllers/teacherController.js";
-import { createPayment, getPayment, getPayments } from "controllers/paymentController";
-import schemaValidator from "middlewares/schemaValidator";
-import teacherPaymentSchema from "schemas/teacherPaymentSchema";
+import tokenValidator from "../middlewares/tokenValidator.js";
+import { deleteTeacher, getTeacher, getTeachers } from "../controllers/teacherController.js";
+import { createPayment, getPayment, getPayments } from "../controllers/paymentController";
+import schemaValidator from "../middlewares/schemaValidator";
+import teacherPaymentSchema from "../schemas/teacherPaymentSchema";
 
 
 const teacherRouter = Router();

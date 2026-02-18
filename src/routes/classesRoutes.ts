@@ -1,6 +1,6 @@
-import { createClass, getClass, getClasses } from "controllers/classController";
+import { createClass, getClass, getClasses } from "../controllers/classController";
 import { Router } from "express";
-import tokenValidator from "middlewares/tokenValidator";
+import tokenValidator from "../middlewares/tokenValidator";
 import multer from "multer";
 
 const upload = multer({ dest: 'uploads/' });

@@ -1,8 +1,8 @@
 import { Router } from "express";
 import schemaValidator from "../middlewares/schemaValidator.js";
-import schemas from "schemas/index.js";
-import { createContract, deleteContract, getContract, getContracts, updateContract } from "controllers/contractController.js";
-import tokenValidator from "middlewares/tokenValidator.js";
+import schemas from "../schemas/index.js";
+import { createContract, deleteContract, getContract, getContracts, updateContract } from "../controllers/contractController.js";
+import tokenValidator from "../middlewares/tokenValidator.js";
 
 const contractRouter = Router();
 
