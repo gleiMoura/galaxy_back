@@ -1,8 +1,8 @@
 import { DateTime } from "luxon";
-import { createClassInDb, getClassById, getClassesByStudentId, getClassesByTeacherId } from "repository/classRepository";
+import { createClassInDb, getClassById, getClassesByStudentId, getClassesByTeacherId } from "../repository/classRepository";
 import { findUser } from "../repository/studentRepository";
 import { ClassType } from "interfaces";
-import classSchema from "schemas/classSchema";
+import classSchema from "../schemas/classSchema";
 
 export const generateClass = async (email: string, data: ClassType, fileUrl: string) => {
     const user = email && await findUser(email);

@@ -1,4 +1,4 @@
-import { generateFileLink } from "repository/filesRepository";
+import { generateFileLink } from "../repository/filesRepository";
 
 export const createFileLink = async (file) => {
     if (!file || !file.path || !file.originalname) {

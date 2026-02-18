@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { generateClass, getAllClasses, getSpecificClass } from "services/classService";
-import { createFileLink } from "services/fileService";
+import { generateClass, getAllClasses, getSpecificClass } from "../services/classService";
+import { createFileLink } from "../services/fileService";
 
 export const createClass = async (req: Request, res: Response) => {
     const file = req.file;
