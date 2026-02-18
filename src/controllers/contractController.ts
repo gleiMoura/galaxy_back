@@ -1,7 +1,7 @@
 
 import { Request, Response } from "express";
-import { ContractType } from "interfaces";
-import { changeContract, findContract, finishContract, getAllContracts, makeContract } from "services/contractService";
+import { ContractType } from "../interfaces";
+import { changeContract, findContract, finishContract, getAllContracts, makeContract } from "../services/contractService";
 
 export const createContract = async (req: Request, res: Response) => {
     const userEmail = req.user?.email;

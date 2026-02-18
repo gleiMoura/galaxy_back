@@ -1,6 +1,6 @@
-import { ContractType } from "interfaces";
+import { ContractType } from "../interfaces";
 import { findUser } from "../repository/studentRepository";
-import { changeContractInDb, createContractInDb, deleteContractInDb, getContractInDb, getContractsInDb } from "repository/contractRepository";
+import { changeContractInDb, createContractInDb, deleteContractInDb, getContractInDb, getContractsInDb } from "../repository/contractRepository";
 
 export const makeContract = async (email: string, data) => {
     const user = email && await findUser(email);
