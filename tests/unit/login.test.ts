@@ -43,7 +43,7 @@ describe('Login Controller', () => {
             expect(mockSend).toHaveBeenCalledWith(userInformation);
         });
 
-        it('deve lançar o erro do service para ser capturado pelo middleware global', async () => {
+        it('must send the error to be captured by global middleware', async () => {
             // ARRANGE
             mockReq = { body: { email: 'errado@galaxy.com', password: '000' } };
             const errorResponse = {
@@ -51,18 +51,15 @@ describe('Login Controller', () => {
             };
             (signinUser as jest.Mock).mockRejectedValue(errorResponse);
 
-            // ACT & ASSERT
-            // 1. Verificamos se a função rejeita com o objeto correto
             await expect(doLogin(mockReq as Request, mockRes as Response))
                 .rejects
                 .toEqual(errorResponse);
 
-            // 2. Garantimos que o Controller NÃO tentou responder por conta própria
             expect(mockStatus).not.toHaveBeenCalled();
             expect(mockSend).not.toHaveBeenCalled();
         });
 
-        it('deve lançar erro para ser capturado pelo middleware de erro', async () => {
+        it('must send the error to be captured by error middleware', async () => {
             const errorResponse = {
                 response: {
                     message: "Erro interno",
