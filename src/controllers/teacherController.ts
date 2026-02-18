@@ -1,6 +1,6 @@
 
 import { Request, Response } from "express";
-import { deleteSpecificTeacher, findTeacher, findTeachers } from "services/teacherService";
+import { deleteSpecificTeacher, findTeacher, findTeachers } from "../../src/services/teacherService";
 
 export const getTeacher = async (req: Request, res: Response) => {
     const user = req.user;

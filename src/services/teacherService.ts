@@ -1,4 +1,4 @@
-import { deleteTeacherFromDb, findAllTeachers, findSpecificTeacher } from "repository/teacherRepository";
+import { deleteTeacherFromDb, findAllTeachers, findSpecificTeacher } from "../../src/repository/teacherRepository";
 
 export const findTeacher = async (user: any, id: number) => {
     if(!id) {
