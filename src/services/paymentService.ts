@@ -1,5 +1,5 @@
 import { response } from "express";
-import { createStudentPaymentInDb, createTeacherPaymentInDb, getStudentPaymentInDb, getStudentPaymentsInDb, getTeacherPaymentInDb, getTeacherPaymentsInDb } from "repository/paymentRepository";
+import { createStudentPaymentInDb, createTeacherPaymentInDb, getStudentPaymentInDb, getStudentPaymentsInDb, getTeacherPaymentInDb, getTeacherPaymentsInDb } from "../repository/paymentRepository";
 
 export const createNewPayment = async (user: any, data) => {
     if (user?.role !== "Admin") {

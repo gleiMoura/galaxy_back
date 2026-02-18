@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createNewPayment, findPayment, findPayments } from "services/paymentService";
+import { createNewPayment, findPayment, findPayments } from "../services/paymentService";
 
 export const createPayment = async (req: Request, res: Response) => {
     const data = req.body;
