@@ -13,7 +13,7 @@ export const findStudent = async (user: any, studentId: number) => {
         }
     };
 
-    if (user.role === student) {
+    if (user.role === "Student") {
         throw {
             response: {
                 status: 409,
