@@ -2,7 +2,7 @@ import { loginType } from "../interfaces/index.js";
 import joi, { ObjectSchema } from "joi";
 
 const loginSchema: ObjectSchema<loginType> = joi.object({
-    email: joi.string().required(),
+    email: joi.string().email().required(),
     password: joi.string().required(),
 });
 
