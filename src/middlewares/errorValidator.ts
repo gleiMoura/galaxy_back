@@ -1,11 +1,14 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from "express";
-import { CustomError } from "interfaces/index.js";
+import { Request, Response, NextFunction } from "express";
+import { CustomError } from "interfaces/index.js"; // Ajuste o caminho se necessário
 
-async function errorHandler(error: CustomError, req: Request, res: Response, next: NextFunction) {
-    if (error.response) {
-        res.status(error.response.status).send(error.response.message);
+async function errorHandler(error: any, req: Request, res: Response, next: NextFunction) {
+    const customErr = error as CustomError;
+
+    if (customErr.response) {
+        res.status(customErr.response.status).send(customErr.response.message);
     } else {
-        res.sendStatus(500)
+        console.error("Erro interno:", error); 
+        res.sendStatus(500);
     }
 };
 
