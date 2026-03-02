@@ -9,7 +9,7 @@ export const findTeacher = async (user: any, id: number) => {
             }
         }
     }
-    const teacher = findSpecificTeacher(id);
+    const teacher = await findSpecificTeacher(id);
 
     if (user?.role === "Student") {
         throw {
