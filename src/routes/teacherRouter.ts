@@ -10,7 +10,7 @@ const teacherRouter = Router();
 
 teacherRouter.get("/teacher/:id", tokenValidator, getTeacher);
 teacherRouter.get("/teachers", tokenValidator, getTeachers);
-teacherRouter.delete("/teacher", tokenValidator, deleteTeacher);
+teacherRouter.delete("/teacher/:id", tokenValidator, deleteTeacher);
 //payments
 teacherRouter.post("/payment/teacher", tokenValidator, schemaValidator(teacherPaymentSchema), createPayment)
 teacherRouter.get("/payment/teacher/:id", tokenValidator, getPayment);
