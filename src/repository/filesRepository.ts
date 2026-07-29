@@ -1,4 +1,4 @@
-import { bucket, bucketName } from "../config/cloud.js";
+import { bucket } from "../config/cloud.js";
 
 // Set para controlar arquivos que estão em processo de upload
 const uploadInProgress = new Set();
