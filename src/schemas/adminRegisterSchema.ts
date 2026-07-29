@@ -1,12 +1,16 @@
 import Joi, { ObjectSchema } from "joi";
-import { TeacherType } from "../interfaces/index.js";
+import { AdminType } from "../interfaces";
 
-const adminRegisterSchema: ObjectSchema<TeacherType> = Joi.object({
-    name: Joi.string().required(),
-    function: Joi.string().required(),
-    email: Joi.string().required(),
-    password: Joi.string().required(),
-    role: Joi.string().required()
+export const adminRegisterSchema: ObjectSchema<AdminType> = Joi.object({
+  name: Joi.string().trim().min(2).max(100).required(),
+  function: Joi.string().trim().min(2).max(100).required(),
+  email: Joi.string().email().trim().lowercase().required(),
+  password: Joi.string().min(8).max(100).required(),
+  profileUrl: Joi.string()
+    .uri()
+    .optional()
+    .default("https://storage.googleapis.com/galaxy-bucket/default-admin.png"),
+  role: Joi.string().valid("admin").default("admin"),
 });
 
 export default adminRegisterSchema;
