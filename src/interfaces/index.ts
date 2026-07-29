@@ -130,3 +130,20 @@ declare module "express-serve-static-core" {
     }
 }
 
+// Define o tipo completo que espelha o modelo Admin no Prisma
+export interface AdminType {
+  id: number;
+  name: string;
+  function: string;
+  email: string;
+  password?: string; // Opcional ao retornar dados em respostas HTTP para omitir o hash
+  role: "admin";
+  profileUrl: string;
+}
+
+// DTO para o payload de cadastro de um novo Administrador
+export type AdminCreateInput = Omit<AdminType, "id">;
+
+// Payload utilizado na geração de Tokens de Autenticação (JWT)
+export type AdminTokenPayload = Pick<AdminType, "id" | "name" | "email" | "role">;
+
