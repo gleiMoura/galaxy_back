@@ -4,19 +4,20 @@ import { teacherRegisterType, studentRegisterType, AdminCreateInput } from "../i
 import { findUser, findStudentByEmail, createStudentInDb } from "../repository/studentRepository";
 import { createAdminInDb, updateUserInDb } from "../repository/registerRepository";
 import { findTeacherByEmailOrCpf, createTeacherInDb } from "repository/teacherRepository";
+
 export const registerStudentService = async (payload: studentRegisterType) => {
   const existingStudent = await findStudentByEmail(payload.email);
-  if (existingStudent) {
-    throw { type: "conflict", message: "Este e-mail já está cadastrado no sistema." };
-  }
-  const SALT_ROUNDS = 10;
-  const hashedPassword = await bcrypt.hash(payload.password, SALT_ROUNDS);
 
-  const newStudentData: studentRegisterType = {
+  if (existingStudent) {
+    throw new AppError("Este e-mail já está cadastrado no sistema.", 409);
+  }
+
+  const hashedPassword = await bcrypt.hash(payload.password, 10);
+
+  return await createStudentInDb({
     ...payload,
     password: hashedPassword,
-  };
-  return await createStudentInDb(newStudentData);
+  });
 };
 
 export const registerTeacherService = async (payload: teacherRegisterType) => {
@@ -35,11 +36,12 @@ export const registerTeacherService = async (payload: teacherRegisterType) => {
   });
 };
 
-// 3. Serviço de Cadastro de Admin
+
 export const registerAdminService = async (payload: AdminCreateInput) => {
   const existingUser = await findUser(payload.email);
+
   if (existingUser) {
-    throw { status: 409, message: "E-mail já cadastrado no sistema." };
+    throw new AppError("E-mail já cadastrado no sistema.", 409);
   }
 
   const hashedPassword = await bcrypt.hash(payload.password, 10);
@@ -50,20 +52,21 @@ export const registerAdminService = async (payload: AdminCreateInput) => {
   });
 };
 
-// 4. Serviço para Atualização do Link da Foto de Perfil (GCS)
 export const logUserWithProfileLink = async (userEmail: string, fileLink: string) => {
   if (!fileLink) {
-    throw { status: 400, message: "URL do arquivo não informada." };
+    throw new AppError("URL do arquivo não informada.", 400);
   }
 
   const user = await findUser(userEmail);
+
   if (!user) {
-    throw { status: 404, message: "Usuário não encontrado." };
+    throw new AppError("Usuário não encontrado.", 404);
   }
 
   const updatedUser = await updateUserInDb(user, fileLink);
+
   if (!updatedUser) {
-    throw { status: 400, message: "Erro ao atualizar imagem de perfil no banco." };
+    throw new AppError("Erro ao atualizar imagem de perfil no banco.", 400);
   }
 
   return { profileUrl: updatedUser.profileUrl };
