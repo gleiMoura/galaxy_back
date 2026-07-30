@@ -1,6 +1,41 @@
 import prisma from "config";
+import { studentRegisterType } from "../interfaces";
 
-export const findUser = async (email) => {
+export const findStudentByEmail = async (email: string) => {
+  try {
+    return await prisma.student.findUnique({
+      where: { email },
+    });
+  } catch (error) {
+    console.error("Erro em findStudentByEmail:", error);
+    throw { type: "database_error", message: "Falha ao buscar estudante no banco de dados." };
+  }
+};
+
+export const createStudentInDb = async (studentData: studentRegisterType) => {
+  try {
+    return await prisma.student.create({
+      data: {
+        name: studentData.name,
+        guardianName: studentData.guardianName,
+        phone: studentData.phone,
+        guardianPhone: studentData.guardianPhone,
+        shortTermGoal: studentData.shortTermGoal,
+        longTermGoal: studentData.longTermGoal,
+        schoolYear: studentData.schoolYear,
+        email: studentData.email,
+        password: studentData.password,
+        profileUrl: studentData.profileUrl,
+        interests: { create: studentData.interests } 
+      },
+    });
+  } catch (error) {
+    console.error("Erro em createStudentInDb:", error);
+    throw { type: "database_error", message: "Falha ao persistir estudante no banco de dados." };
+  }
+};
+
+export const findUser = async (email: string) => {
     try {
         return (
             await prisma.student.findUnique({ where: { email } }) ||
@@ -22,7 +57,7 @@ export const findAllStudents = async () => {
     }
 };
 
-export const updateStudentInDB = async (userId: number, updateData) => {
+export const updateStudentInDB = async (userId: number, updateData: any) => {
     try {
         return (
             await prisma.student.update({

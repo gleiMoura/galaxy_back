@@ -17,12 +17,12 @@ enum PaymentStatus {
 }
 
 enum ClassStatus {
-  SCHEDULED   // Aula agendada e confirmada na grade
-  MISSED      // Cancelamento tardio (< 48h) ou No-Show (consome crédito, paga professor)
-  CANCELED    // Cancelamento com antecedência (> 48h) (estorna crédito)
-  MINISTERED  // Professor marcou como ministrada (Inicia contagem de 24h para o aluno)
-  COMPLETED   // Confirmado pelo aluno ou por decurso de prazo após 24h
-  DISPUTE     // Student reportou problema (Bloqueia repasse para auditoria admin)
+  SCHEDULED // Aula agendada e confirmada na grade
+  MISSED // Cancelamento tardio (< 48h) ou No-Show (consome crédito, paga professor)
+  CANCELED // Cancelamento com antecedência (> 48h) (estorna crédito)
+  MINISTERED // Professor marcou como ministrada (Inicia contagem de 24h para o aluno)
+  COMPLETED // Confirmado pelo aluno ou por decurso de prazo após 24h
+  DISPUTE // Student reportou problema (Bloqueia repasse para auditoria admin)
 }
 
 // ==========================================
@@ -40,6 +40,8 @@ model Teacher {
   email          String         @unique
   password       String
   profileUrl     String
+  cpf            String         @unique
+  phone          String
   availabilities Availability[]
   contracts      Contract[]
   payments       Payment[]
@@ -79,6 +81,7 @@ model StudentInterest {
   id        Int     @id @default(autoincrement())
   student   Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
   studentId Int
+  subject   String
 
   @@index([studentId])
 }
@@ -88,7 +91,7 @@ model Plan {
   name           String
   description    String
   price          Decimal    @db.Decimal(10, 2)
-  lessonsPerWeek Int        // Limite dinâmico: 1, 2 ou 3 
+  lessonsPerWeek Int // Limite dinâmico: 1, 2 ou 3 
   totalLessons   Int
   contracts      Contract[]
 }
@@ -97,20 +100,20 @@ model Contract {
   id                   Int      @id @default(autoincrement())
   startDate            DateTime // Início da vigência do contrato 
   endDate              DateTime // Término para cálculo de aulas totais previstas 
-  lessonsPerWeek       Int      // Injeção dinâmica semanal (1, 2 ou 3) 
+  lessonsPerWeek       Int // Injeção dinâmica semanal (1, 2 ou 3) 
   usedLessons          Int      @default(0)
-  contractTotalLessons Int      // Total previsto até o fim do contrato 
+  contractTotalLessons Int // Total previsto até o fim do contrato 
   firstMonthLessons    Int
   secondMonthLessons   Int
   thirdMonthLessons    Int
   signed               Boolean  @default(false)
-  
-  plan                 Plan     @relation(fields: [planId], references: [id])
-  planId               Int
-  student              Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  studentId            Int
-  teacher              Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
-  teacherId            Int?
+
+  plan      Plan     @relation(fields: [planId], references: [id])
+  planId    Int
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  studentId Int
+  teacher   Teacher? @relation(fields: [teacherId], references: [id], onDelete: SetNull)
+  teacherId Int?
 
   @@index([studentId])
   @@index([teacherId])
@@ -134,21 +137,21 @@ model StudentPayment {
   amount     Decimal       @db.Decimal(10, 2)
   dueDate    DateTime
   status     PaymentStatus @default(PENDING)
-  invoiceUrl String        // URL do PDF no Google Cloud Storage
+  invoiceUrl String // URL do PDF no Google Cloud Storage
 
   @@index([studentId])
   @@index([status])
 }
 
 model Availability {
-  id           Int      @id @default(autoincrement())
-  teacher      Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
-  teacherId    Int
-  weekday      Int      // 1 = Domingo, 7 = Sábado
-  startTime    String   // ex: "14:30"
-  endTime      String   // ex: "15:30"
-  isExtraHour  Boolean  @default(false)
-  requestedAt  DateTime @default(now()) // Para auditoria da regra de corte do dia 20 
+  id          Int      @id @default(autoincrement())
+  teacher     Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  teacherId   Int
+  weekday     Int // 1 = Domingo, 7 = Sábado
+  startTime   String // ex: "14:30"
+  endTime     String // ex: "15:30"
+  isExtraHour Boolean  @default(false)
+  requestedAt DateTime @default(now()) // Para auditoria da regra de corte do dia 20 
 
   @@index([teacherId])
   @@index([teacherId, weekday])
@@ -162,11 +165,11 @@ model Class {
   teacherId       Int
   title           String
   subject         String
-  scheduledAt     DateTime    // Horário em UTC-3
+  scheduledAt     DateTime // Horário em UTC-3
   status          ClassStatus @default(SCHEDULED)
-  teacherMarkedAt DateTime?   // Gatilho da janela de 24h para confirmação do aluno
+  teacherMarkedAt DateTime? // Gatilho da janela de 24h para confirmação do aluno
   sentAt          DateTime    @default(now())
-  pdfUrl          String?     // URL do PDF anexado no Google Cloud Storage
+  pdfUrl          String? // URL do PDF anexado no Google Cloud Storage
 
   @@index([studentId])
   @@index([teacherId])

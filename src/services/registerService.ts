@@ -1,78 +1,70 @@
 import bcrypt from "bcrypt";
-import { teacherRegisterType, studentRegisterType } from "../interfaces/index.js";
-import { findUser } from "../repository/studentRepository.js";
-import { logUserInDb, updateUserInDb } from "../repository/registerRepository.js";
+import { AppError } from "../interfaces";
+import { teacherRegisterType, studentRegisterType, AdminCreateInput } from "../interfaces";
+import { findUser, findStudentByEmail, createStudentInDb } from "../repository/studentRepository";
+import { createAdminInDb, updateUserInDb } from "../repository/registerRepository";
+import { findTeacherByEmailOrCpf, createTeacherInDb } from "repository/teacherRepository";
+export const registerStudentService = async (payload: studentRegisterType) => {
+  const existingStudent = await findStudentByEmail(payload.email);
+  if (existingStudent) {
+    throw { type: "conflict", message: "Este e-mail já está cadastrado no sistema." };
+  }
+  const SALT_ROUNDS = 10;
+  const hashedPassword = await bcrypt.hash(payload.password, SALT_ROUNDS);
 
-export const logUser = async (credentials: teacherRegisterType | studentRegisterType) => {
-    const { password, email } = credentials;
-
-    const passwordCrypt = bcrypt.hashSync(password, 10);
-
-    const user = await findUser(email);
-
-    if (user) {
-        throw {
-            response: {
-                status: 409,
-                message: "User is loged in system"
-            }
-        }
-    };
-
-    const info = {
-        ...credentials,
-        profileUrl: "",
-        password: passwordCrypt,
-    }
-
-    const result = await logUserInDb(info);
-
-    if (!result) {
-        throw {
-            response: {
-                status: 400,
-                message: "Problem in service to log user!"
-            }
-        }
-    };
-
-    return result;
+  const newStudentData: studentRegisterType = {
+    ...payload,
+    password: hashedPassword,
+  };
+  return await createStudentInDb(newStudentData);
 };
 
+export const registerTeacherService = async (payload: teacherRegisterType) => {
+  const existingUser = await findTeacherByEmailOrCpf(payload.email, payload.cpf);
+
+  if (existingUser) {
+    const conflictField = existingUser.email === payload.email ? 'E-mail' : 'CPF';
+    throw new AppError(`${conflictField} já cadastrado no sistema.`, 409);
+  }
+
+  const hashedPassword = await bcrypt.hash(payload.password, 10);
+
+  return await createTeacherInDb({
+    ...payload,
+    password: hashedPassword,
+  });
+};
+
+// 3. Serviço de Cadastro de Admin
+export const registerAdminService = async (payload: AdminCreateInput) => {
+  const existingUser = await findUser(payload.email);
+  if (existingUser) {
+    throw { status: 409, message: "E-mail já cadastrado no sistema." };
+  }
+
+  const hashedPassword = await bcrypt.hash(payload.password, 10);
+
+  return await createAdminInDb({
+    ...payload,
+    password: hashedPassword,
+  });
+};
+
+// 4. Serviço para Atualização do Link da Foto de Perfil (GCS)
 export const logUserWithProfileLink = async (userEmail: string, fileLink: string) => {
-    const user = await findUser(userEmail);
+  if (!fileLink) {
+    throw { status: 400, message: "URL do arquivo não informada." };
+  }
 
-    if (!fileLink) {
-        throw {
-            response: {
-                status: 404,
-                message: "File need to be sent or problem to create file link."
-            }
-        }
-    }
+  const user = await findUser(userEmail);
+  if (!user) {
+    throw { status: 404, message: "Usuário não encontrado." };
+  }
 
-    if (!user) {
-        throw {
-            response: {
-                status: 409,
-                message: "User is not loged in system"
-            }
-        }
-    }
+  const updatedUser = await updateUserInDb(user, fileLink);
+  if (!updatedUser) {
+    throw { status: 400, message: "Erro ao atualizar imagem de perfil no banco." };
+  }
 
-    const result = await updateUserInDb(user, fileLink);
-
-    if (!result) {
-        throw {
-            response: {
-                status: 400,
-                message: "It is not possible save image!"
-            }
-        }
-    };
-
-    return ({
-        profileUrl: fileLink
-    });
+  return { profileUrl: updatedUser.profileUrl };
 };
-

@@ -1,53 +1,44 @@
-import prisma from "config/index.js";
-import { studentRegisterType, teacherRegisterType } from "interfaces";
+import prisma from "../config/index";
+import { AdminCreateInput } from "../interfaces";
 
-export const logUserInDb = async (userData) => {
-    try {
-        if (userData.role === "Teacher") {
-            return await prisma.teacher.create({
-                data: userData
-            });
-        } else if (userData.role === "Student") {
-            return await prisma.student.create({
-                data: {
-                    ...userData, interests: {
-                        create: userData.interests.map(subject => ({
-                            subject
-                        }))
-                    }
-                }
-            });
-        } else if (userData.role === "Admin") {
-            return await prisma.admin.create({
-                data: userData
-            });
-        } else {
-            return null
-        }
-    } catch (error) {
-        console.error("Problem in repository trying log user!", error);
-    }
+export const createAdminInDb = async (data: AdminCreateInput) => {
+    return await prisma.admin.create({
+        data: {
+            name: data.name,
+            email: data.email,
+            password: data.password,
+            function: data.function,
+            profileUrl: data.profileUrl || "https://storage.googleapis.com/galaxy-bucket/default-admin.png",
+        },
+    });
 };
 
-export const updateUserInDb = async (user: studentRegisterType | teacherRegisterType, fileLink: string) => {
-    try {
-        let result = null;
+export const updateUserInDb = async (
+    user: { email: string; role: string },
+    fileLink: string
+) => {
+    const normalizedRole = user.role.toLowerCase();
 
-        if (user.role === "Student") {
-            result = await prisma.student.update({
-                where: { email: user.email },
-                data: { profileUrl: fileLink },
-            });
-        } else if (user.role === "Teacher") {
-            result = await prisma.teacher.update({
-                where: { email: user.email },
-                data: { profileUrl: fileLink },
-            });
-        }
-
-        return result;
-
-    } catch (error) {
-        console.error("Error updating user profile in DB:", error);
+    if (normalizedRole === "student") {
+        return await prisma.student.update({
+            where: { email: user.email },
+            data: { profileUrl: fileLink },
+        });
     }
+
+    if (normalizedRole === "teacher") {
+        return await prisma.teacher.update({
+            where: { email: user.email },
+            data: { profileUrl: fileLink },
+        });
+    }
+
+    if (normalizedRole === "admin") {
+        return await prisma.admin.update({
+            where: { email: user.email },
+            data: { profileUrl: fileLink },
+        });
+    }
+
+    return null;
 };

@@ -1,45 +1,40 @@
-import { bucket } from "../config/cloud.js";
+import { bucket } from "../config/cloud";
 
-// Set para controlar arquivos que estão em processo de upload
-const uploadInProgress = new Set();
+export const generateFileLink = async (file: Express.Multer.File): Promise<string> => {
+  if (!file || !file.buffer) {
+    throw new Error("Arquivo ou buffer inválido para upload.");
+  }
 
-export const generateFileLink = async (file) => {
-    try {
-        const filePath = file.path;
-        const fileName = file.originalname;
+  // Gera um nome único para o arquivo no bucket para evitar substituições
+  const fileExtension = file.originalname.split(".").pop();
+  const fileName = `profiles/${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExtension}`;
+  const gcsFile = bucket.file(fileName);
 
-        // Verificar se o arquivo já está em processo de upload
-        if (uploadInProgress.has(fileName)) {
-            console.log('Upload já está em progresso para esse arquivo.');
-            return;
-        }
+  // Upload via stream em memória
+  return new Promise((resolve, reject) => {
+    const stream = gcsFile.createWriteStream({
+      metadata: {
+        contentType: file.mimetype,
+      },
+      resumable: false,
+    });
 
-        // Adiciona o arquivo ao conjunto de uploads em progresso
-        uploadInProgress.add(fileName);
+    stream.on("error", (error) => {
+      console.error("Erro no upload do GCS:", error);
+      reject(new Error("Falha ao salvar a foto de perfil no Google Cloud Storage."));
+    });
 
-        const destination = bucket.file(fileName);
+    stream.on("finish", async () => {
+      try {
+        // Torna o arquivo público e gera a URL pública de acesso
+        await gcsFile.makePublic();
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${fileName}`;
+        resolve(publicUrl);
+      } catch (err) {
+        reject(new Error("Erro ao definir visibilidade pública no GCS."));
+      }
+    });
 
-        // Realiza o upload
-        await bucket.upload(filePath, {
-            destination: fileName,
-        });
-
-        // Torna o arquivo público
-        await destination.makePublic();
-
-        // Gera o link público
-        const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
-
-        // Remove o arquivo do conjunto após o upload
-        uploadInProgress.delete(fileName);
-
-        return publicUrl;
-    } catch (error) {
-        console.error('Erro no upload:', error);
-        // Remove o arquivo do conjunto em caso de erro também
-        if (file && file.originalname) {
-            uploadInProgress.delete(file.originalname);
-        }
-        throw new Error('Falha ao gerar link do perfil: ' + error.message);
-    }
+    stream.end(file.buffer);
+  });
 };

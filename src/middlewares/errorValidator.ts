@@ -1,15 +1,32 @@
 import { Request, Response, NextFunction } from "express";
-import { CustomError } from "interfaces/index.js"; // Ajuste o caminho se necessário
+import { Prisma } from "@prisma/client";
+import { AppError } from "interfaces";
 
-async function errorHandler(error: any, req: Request, res: Response, next: NextFunction) {
-    const customErr = error as CustomError;
+export default async function errorHandler(
+  error: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (error instanceof AppError) {
+    return res.status(error.statusCode).json({
+      status: "error",
+      message: error.message,
+    });
+  }
 
-    if (customErr.response) {
-        res.status(customErr.response.status).send(customErr.response.message);
-    } else {
-        console.error("Erro interno:", error); 
-        res.sendStatus(500);
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2002") {
+      return res.status(409).json({
+        status: "error",
+        message: "Conflito: Um registro com estes dados já existe no sistema.",
+      });
     }
-};
+  }
 
-export default errorHandler;
+  console.error("Erro interno do servidor:", error);
+  return res.status(500).json({
+    status: "error",
+    message: "Erro interno do servidor. Contate a administração do Galaxy.",
+  });
+}

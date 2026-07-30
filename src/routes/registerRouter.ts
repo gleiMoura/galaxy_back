@@ -1,47 +1,40 @@
 import { Router } from "express";
 import multer from "multer";
-import { doRegister, insertProfileImage } from "../controllers/registerController";
+import {
+  registerStudent,
+  registerTeacher,
+  registerAdmin,
+  insertProfileImage,
+} from "../controllers/registerController";
 import schemaValidator from "../middlewares/schemaValidator";
 import tokenValidator from "../middlewares/tokenValidator";
 import schemas from "../schemas";
 
-// Configuração para manter a foto em memória e enviá-la para o Google Cloud Storage
 const upload = multer({
   storage: multer.memoryStorage(),
-  limits: {
-    fileSize: 5 * 1024 * 1024, // Limite de 5MB por foto de perfil
-  },
-  fileFilter: (_req, file, cb) => {
-    if (file.mimetype.startsWith("image/")) {
-      cb(null, true);
-    } else {
-      cb(new Error("Apenas arquivos de imagem são permitidos."));
-    }
-  },
+  limits: { fileSize: 5 * 1024 * 1024 }, // Limite de 5MB
 });
 
 const registerRouter = Router();
 
-// Rotas de cadastro com validação de Schema (Joi/Zod)
 registerRouter.post(
   "/register/teacher",
   schemaValidator(schemas.teacherRegisterSchema),
-  doRegister
+  registerTeacher
 );
 
 registerRouter.post(
   "/register/student",
   schemaValidator(schemas.studentRegisterSchema),
-  doRegister
+  registerStudent
 );
 
 registerRouter.post(
   "/register/admin",
   schemaValidator(schemas.adminRegisterSchema),
-  doRegister
+  registerAdmin
 );
 
-// Rota de foto de perfil autenticada
 registerRouter.put(
   "/register/profile",
   tokenValidator,

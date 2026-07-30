@@ -4,18 +4,23 @@ export interface loginType {
     password: string
 };
 
+export interface StudentInterestInput {
+    subject: string;
+}
+
 export interface studentRegisterType {
     name: string;
-    guardianName: string;
-    phone: string;
-    guardianPhone: string;
-    shortTermGoal: string;
-    longTermGoal: string;
+    guardianName?: string | null;
+    phone?: string | null;
+    guardianPhone?: string | null;
+    shortTermGoal?: string | null;
+    longTermGoal?: string | null;
     schoolYear: number;
-    interests: string;
-    role?: string;
+    interests: StudentInterestInput[]; // Array de objetos para criação em cascata no Prisma
+    role?: "student";
     email: string;
     password: string;
+    profileUrl?: string;
 }
 export interface studentType {
     id?: number;
@@ -31,12 +36,18 @@ export interface studentType {
 }
 
 export interface teacherRegisterType {
-    name: string,
-    profileUrl?: string,
-    email: string,
-    password: string,
-    role: string
-};
+    name: string;
+    subject: string;
+    academicDegree: string;
+    funFactOne?: string | null;
+    funFactTwo?: string | null;
+    email: string;
+    password: string;
+    role?: "teacher";
+    profileUrl?: string;
+    cpf: string;
+    phone: string;
+}
 export interface CustomError extends Error {
     response?: {
         status: number;
@@ -132,13 +143,13 @@ declare module "express-serve-static-core" {
 
 // Define o tipo completo que espelha o modelo Admin no Prisma
 export interface AdminType {
-  id: number;
-  name: string;
-  function: string;
-  email: string;
-  password?: string; // Opcional ao retornar dados em respostas HTTP para omitir o hash
-  role: "admin";
-  profileUrl: string;
+    id: number;
+    name: string;
+    function: string;
+    email: string;
+    password: string; // Opcional ao retornar dados em respostas HTTP para omitir o hash
+    role: "admin";
+    profileUrl: string;
 }
 
 // DTO para o payload de cadastro de um novo Administrador
@@ -147,3 +158,12 @@ export type AdminCreateInput = Omit<AdminType, "id">;
 // Payload utilizado na geração de Tokens de Autenticação (JWT)
 export type AdminTokenPayload = Pick<AdminType, "id" | "name" | "email" | "role">;
 
+export class AppError extends Error {
+  public readonly statusCode: number;
+
+  constructor(message: string, statusCode = 400) {
+    super(message);
+    this.statusCode = statusCode;
+    Object.setPrototypeOf(this, AppError.prototype);
+  }
+}
