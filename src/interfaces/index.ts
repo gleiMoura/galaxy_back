@@ -1,4 +1,6 @@
 import { Request } from "express";
+
+import { JwtPayload } from "jsonwebtoken";
 export interface loginType {
     email: string,
     password: string
@@ -165,5 +167,19 @@ export class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
     Object.setPrototypeOf(this, AppError.prototype);
+  }
+}
+
+export interface CustomJwtPayload extends JwtPayload {
+  id: number;
+  email: string;
+  role: string;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: CustomJwtPayload; // Usa a interface customizada
+    }
   }
 }

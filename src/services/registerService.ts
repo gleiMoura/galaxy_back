@@ -3,7 +3,7 @@ import { AppError } from "../interfaces";
 import { teacherRegisterType, studentRegisterType, AdminCreateInput } from "../interfaces";
 import { findUser, findStudentByEmail, createStudentInDb } from "../repository/studentRepository";
 import { createAdminInDb, updateUserInDb } from "../repository/registerRepository";
-import { findTeacherByEmailOrCpf, createTeacherInDb } from "repository/teacherRepository";
+import { findTeacherByEmailOrCpf, createTeacherInDb } from "../repository/teacherRepository";
 
 export const registerStudentService = async (payload: studentRegisterType) => {
   const existingStudent = await findStudentByEmail(payload.email);
@@ -36,7 +36,6 @@ export const registerTeacherService = async (payload: teacherRegisterType) => {
   });
 };
 
-
 export const registerAdminService = async (payload: AdminCreateInput) => {
   const existingUser = await findUser(payload.email);
 
@@ -52,8 +51,8 @@ export const registerAdminService = async (payload: AdminCreateInput) => {
   });
 };
 
-export const logUserWithProfileLink = async (userEmail: string, fileLink: string) => {
-  if (!fileLink) {
+export const logUserWithProfileLink = async (userEmail: string, profileUrl: string) => {
+  if (!profileUrl) {
     throw new AppError("URL do arquivo não informada.", 400);
   }
 
@@ -63,7 +62,7 @@ export const logUserWithProfileLink = async (userEmail: string, fileLink: string
     throw new AppError("Usuário não encontrado.", 404);
   }
 
-  const updatedUser = await updateUserInDb(user, fileLink);
+  const updatedUser = await updateUserInDb(user, profileUrl);
 
   if (!updatedUser) {
     throw new AppError("Erro ao atualizar imagem de perfil no banco.", 400);

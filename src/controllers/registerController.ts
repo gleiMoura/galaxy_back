@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { generateFileLink } from "../repository/filesRepository";
+import { FileRepository } from "../repository/filesRepository";
 import {
   registerStudentService,
   registerTeacherService,
@@ -29,7 +29,6 @@ export const registerStudent = async (
   }
 };
 
-// 2. Cadastro de Professor
 export const registerTeacher = async (
   req: Request,
   res: Response,
@@ -43,7 +42,6 @@ export const registerTeacher = async (
   }
 };
 
-// 3. Cadastro de Administrador
 export const registerAdmin = async (
   req: Request,
   res: Response,
@@ -57,7 +55,6 @@ export const registerAdmin = async (
   }
 };
 
-// 4. Upload de Foto de Perfil no Google Cloud Storage
 export const insertProfileImage = async (
   req: AuthenticatedRequest,
   res: Response,
@@ -77,8 +74,9 @@ export const insertProfileImage = async (
       return;
     }
 
-    const fileLink = await generateFileLink(file);
-    const profile = await logUserWithProfileLink(userEmail, fileLink);
+    const publicFileUrl = await FileRepository.uploadPublicFile(file, 'profiles');
+
+    const profile = await logUserWithProfileLink(userEmail, publicFileUrl);
 
     res.status(200).json(profile);
   } catch (error) {
