@@ -6,10 +6,11 @@ dotenv.config();
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  PORT: z.string().transform(Number).default('3000'),
+  PORT: z.string().transform(Number).default('5000'),
   DATABASE_URL: z.string().url({ message: 'DATABASE_URL deve ser uma URL Postgres válida' }),
-  GOOGLE_PROJECT_ID: z.string().min(1, 'GOOGLE_PROJECT_ID é obrigatório'),
-  GOOGLE_BUCKET_NAME: z.string().min(1, 'GOOGLE_BUCKET_NAME é obrigatório'),
+  GOOGLE_PROJECT_ID: z.string().min(1, 'GOOGLE_PROJECT_ID é obrigatório.'),
+  GCP_PUBLIC_BUCKET: z.string().min(1, 'GCP_PUBLIC_BUCKET é obrigatório no .env.'),
+  GCP_PRIVATE_BUCKET: z.string().min(1, 'GCP_PRIVATE_BUCKET é obrigatório no .env.'),
   JWT_SECRET: z.string().min(32, 'JWT_SECRET deve ter pelo menos 32 caracteres'),
 });
 
