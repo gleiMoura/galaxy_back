@@ -17,13 +17,12 @@ const tokenValidator = (req: Request, res: Response, next: NextFunction): void =
 
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-        // 2. Transmite o erro de configuração para o middleware de erro do Express
         return next(new AppError("JWT_SECRET não está configurado nas variáveis de ambiente."));
     }
 
     try {
         const decoded = jwt.verify(token, secret) as CustomJwtPayload;
-        req.user = decoded;
+        res.locals.user = decoded;
         return next();
     } catch (error: any) {
         if (error.name === "TokenExpiredError") {
