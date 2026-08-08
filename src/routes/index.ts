@@ -6,6 +6,7 @@ import contractRouter from "./contractRouter.js";
 import classesRouter from "./classesRouter.js";
 import teacherRouter from "./teacherRouter.js";
 import availabilityRouter from "./availabilityRouter.js";
+import planRouter from "./planRouter.js";
 
 const router = Router();
 router.use(loginRouter);
@@ -15,5 +16,6 @@ router.use(teacherRouter)
 router.use(contractRouter);
 router.use(classesRouter);
 router.use(availabilityRouter);
+router.use(planRouter);
 
 export default router;
