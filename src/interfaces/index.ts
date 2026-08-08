@@ -106,23 +106,22 @@ export interface TeacherType {
     profileUrl?: string
 };
 
-export type ContractType = {
-    id?: number;
-    startDate: Date;
-    endDate: Date;
+export interface CreateContractInput {
+    startDate: string | Date;
+    endDate: string | Date;
     lessonsPerWeek: number;
     usedLessons?: number;
     contractTotalLessons: number;
     firstMonthLessons: number;
     secondMonthLessons: number;
     thirdMonthLessons: number;
-    signed: boolean;
+    signed?: boolean;
     planId: number;
     studentId: number;
     teacherId?: number | null;
-    student?: studentType,
-    teacher?: TeacherType
-};
+}
+
+export type UpdateContractInput = Partial<CreateContractInput>;
 
 export type ClassType = {
     id?: number;

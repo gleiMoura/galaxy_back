@@ -4,7 +4,7 @@ import teacherRegisterSchema from "./teacherRegisterSchema";
 import loginSchema from "./loginSchema";
 import studentSchema from "./studentSchema";
 import teacherSchema from "./teacherSchema";
-import contractSchema from "./contractSchema";
+import {createContractSchema, updateContractSchema} from "./contractSchema";
 
 const schemas = {
     adminRegisterSchema,
@@ -13,7 +13,8 @@ const schemas = {
     loginSchema,
     studentSchema,
     teacherSchema,
-    contractSchema
+    updateContractSchema,
+    createContractSchema
 };
 
 export default schemas;

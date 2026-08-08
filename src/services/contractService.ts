@@ -1,152 +1,105 @@
-import { ContractType } from "../interfaces";
-import { findUser } from "../repository/studentRepository";
-import { changeContractInDb, createContractInDb, deleteContractInDb, getContractInDb, getContractsInDb } from "../repository/contractRepository";
+import { AppError } from "../interfaces";
+import * as contractRepository from "../repository/contractRepository";
+import { CreateContractInput, UpdateContractInput } from "../interfaces";
 
-export const makeContract = async (email: string, data) => {
-    const user = email && await findUser(email);
+const calculateMonthDifference = (startDate: Date, endDate: Date): number => {
+    const startYear = startDate.getFullYear();
+    const startMonth = startDate.getMonth();
+    const endYear = endDate.getFullYear();
+    const endMonth = endDate.getMonth();
 
-    if (user?.role === "Teacher") {
-        throw {
-            response: {
-                status: 400,
-                message: "Usuário não tem permissão!"
-            }
-        }
-    };
+    return (endYear - startYear) * 12 + (endMonth - startMonth);
+};
 
-    const result = await createContractInDb(data);
+const validateContractDuration = (startDateStr: string | Date, endDateStr: string | Date) => {
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
 
-    if (!result) {
-        throw {
-            response: {
-                status: 500,
-                message: "Não foi possível criar o contrato no momento."
-            }
-        }
+    if (start >= end) {
+        throw new AppError("A data de término deve ser posterior à data de início.", 400);
+    }
+
+    const diffInMonths = calculateMonthDifference(start, end);
+
+    // Regra de negócio: Contratos duram 3, 6 ou 12 meses
+    const validDurations = [3, 6, 12];
+    if (!validDurations.includes(diffInMonths)) {
+        throw new AppError(
+            `Duração de contrato inválida. O contrato tem duração calculada de ${diffInMonths} meses, mas só são permitidos contratos de 3, 6 ou 12 meses.`,
+            400
+        );
     }
 };
 
-export const getAllContracts = async (email: string) => {
-    const user = email && await findUser(email);
 
-    if (user?.role !== "Admin") {
-        throw {
-            response: {
-                status: 400,
-                message: "Usuário não tem permissão!"
-            }
-        }
-    };
+export async function createContract(data: CreateContractInput) {
+    validateContractDuration(data.startDate, data.endDate);
+    
+    return await contractRepository.create(data);
+}
 
-    const result = await getContractsInDb();
+export async function updateContract(contractId: number, data: UpdateContractInput) {
+    const existingContract = await contractRepository.findById(contractId);
 
-    if (!result) {
-        throw {
-            response: {
-                status: 500,
-                message: "Não foi possível pegar os contratos no momento."
-            }
-        }
+    if (!existingContract) {
+        throw new AppError("Contrato não encontrado.", 404);
     }
 
-    return result;
-};
-
-export const findContract = async (email: string, id: string) => {
-    const user = email && await findUser(email);
-    const contractId = parseInt(id);
-
-    if (user?.role !== "Admin") {
-        throw {
-            response: {
-                status: 400,
-                message: "Usuário não tem permissão!"
-            }
-        }
-    };
-
-    const result = await getContractInDb(contractId);
-
-    if (!result) {
-        throw {
-            response: {
-                status: 500,
-                message: "Não foi possível pegar o contrato no momento."
-            }
-        }
+    const newStartDate = data.startDate || existingContract.startDate;
+    const newEndDate = data.endDate || existingContract.endDate;
+    
+    if (data.startDate || data.endDate) {
+        validateContractDuration(newStartDate, newEndDate);
     }
 
-    return result;
-};
+    return await contractRepository.update(contractId, data);
+}
 
-export const changeContract = async (email: string, dataContract: ContractType) => {
-    const user = email && await findUser(email);
+export async function deleteContract(contractId: number) {
+    const existingContract = await contractRepository.findById(contractId);
 
-    if (user?.role !== "Admin") {
-        throw {
-            response: {
-                status: 400,
-                message: "Usuário não tem permissão!"
-            }
-        }
-    };
-
-    if (dataContract.signed === true) {
-        throw {
-            response: {
-                status: 409,
-                message: "Usuário já assinou o contrato. Não é possível mudá-lo."
-            }
-        }
+    if (!existingContract) {
+        throw new AppError("Contrato não encontrado.", 404);
     }
 
-    const result = await changeContractInDb(dataContract);
+    return await contractRepository.remove(contractId);
+}
 
-    if (!result) {
-        throw {
-            response: {
-                status: 500,
-                message: "Não foi possível mudar o contrato no momento!."
-            }
-        }
+export async function getContractById(contractId: number, userId: number, userRole: string) {
+    // Bloqueio imediato para professores
+    if (userRole === "teacher") {
+        throw new AppError("Acesso negado. Professores não têm permissão para visualizar contratos.", 403);
     }
 
-    return result;
-};
+    const contract = await contractRepository.findById(contractId);
 
-export const finishContract = async (email: string, id: string) => {
-    const user = email && await findUser(email);
-    const contractId = parseInt(id);
-    const contract: ContractType = await getContractInDb(contractId);
-
-    if (user?.role !== "Admin") {
-        throw {
-            response: {
-                status: 400,
-                message: "Usuário não tem permissão!"
-            }
-        }
-    };
-
-    if (contract.signed === true) {
-        throw {
-            response: {
-                status: 409,
-                message: "Usuário já assinou o contrato. Não é possível deletá-lo."
-            }
-        }
+    if (!contract) {
+        throw new AppError("Contrato não encontrado.", 404);
     }
 
-    const result = await deleteContractInDb(contractId);
-
-    if (!result) {
-        throw {
-            response: {
-                status: 500,
-                message: "Não foi possível mudar o contrato no momento!."
-            }
-        }
+    // Regra de isolamento de dados: Alunos só veem contratos vinculados a eles
+    if (userRole === "student" && contract.studentId !== userId) {
+        throw new AppError("Acesso negado. Este contrato não pertence a você.", 403);
     }
 
-    return result;
-};
+    return contract;
+}
+
+export async function getContracts(userId: number, userRole: string) {
+    // Bloqueio explícito para professores
+    if (userRole === "teacher") {
+        throw new AppError("Acesso negado. Professores não têm permissão para visualizar contratos.", 403);
+    }
+
+    // Admin vê todos os contratos. 
+    if (userRole === "admin") {
+        return await contractRepository.findAll();
+    }
+
+    // Aluno vê os seus próprios contratos.
+    if (userRole === "student") {
+        return await contractRepository.findByStudentId(userId);
+    }
+
+    throw new AppError("Perfil de usuário inválido para busca de contratos.", 403);
+}
